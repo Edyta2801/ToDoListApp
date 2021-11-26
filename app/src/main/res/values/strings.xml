@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">TODO</string>
+    <string name="enter_todo">Enter Todo</string>
+    <string name="add_todo">Add Todo</string>
+    <string name="delete_done">Delete done</string>
+    <string name="example">Example</string>
+    <string name="delete_todo">delete Todo</string>
+    <string name="item1_menu">item1</string>
+    <string name="item2_menu">About</string>
 </resources>
