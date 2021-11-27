@@ -7,30 +7,34 @@
     tools:context=".MainActivity">
 
     <include
-    android:id="@+id/toolbar"
-    layout="@layout/toolbar" />
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTodoItems"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-     />
+            android:layout_height="675dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/etTodoTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:autofillHints="Enter Todo"
             android:hint="@string/enter_todo"
+            android:inputType="text"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnAddTodo"
             app:layout_constraintStart_toStartOf="parent"
-            android:autofillHints=""
-            android:inputType="text"
 
             />
 
