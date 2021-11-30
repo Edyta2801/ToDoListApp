@@ -10,53 +10,33 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/toolbar" >
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvTodoItems"
+        <ListView
+            android:id="@+id/lvTodoItems"
             android:layout_width="match_parent"
-            android:layout_height="675dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/etTodoTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:autofillHints="Enter Todo"
-            android:hint="@string/enter_todo"
-            android:inputType="text"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnAddTodo"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scrollbars="none"
 
             />
 
-        <Button
-            android:id="@+id/btnAddTodo"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_todo"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnDeleteDoneTodos" />
+            android:layout_margin="15dp"
+            android:layout_gravity="bottom|end"
+           android:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            android:src="@drawable/ic_baseline_add_24"
+            tools:ignore="ContentDescription" />
 
-        <Button
-            android:id="@+id/btnDeleteDoneTodos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete_done"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_editor_absoluteX="133dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

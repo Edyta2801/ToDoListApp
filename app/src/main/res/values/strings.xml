@@ -7,4 +7,5 @@
     <string name="delete_todo">delete Todo</string>
     <string name="item1_menu">ItemMenu</string>
     <string name="item2_menu">About</string>
+    <string name="delete_todo_button">Delete Todo</string>
 </resources>

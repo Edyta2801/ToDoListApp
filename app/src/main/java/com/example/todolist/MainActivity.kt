@@ -4,14 +4,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
-import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_todo.*
+import android.view.View
+//import android.widget.Button
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.google.firebase.database.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton as FloatingActionButton
+import kotlin.Boolean as Boolean
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UpdateAndDelete {
 
-    private lateinit var todoAdapter: TodoAdapter
+   lateinit var database:DatabaseReference
+    var toDoList:MutableList<Todo>?=null
+   lateinit var adapter:TodoAdapter
+   private var listViewItem : ListView?=null
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,33 +32,100 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        todoAdapter = TodoAdapter(mutableListOf())
 
-        rvTodoItems.adapter = todoAdapter
-        rvTodoItems.layoutManager = LinearLayoutManager(this)
+        val fab = findViewById<View>(R.id.fab) as FloatingActionButton
 
-        btnAddTodo.setOnClickListener {
-            val todoTitle = etTodoTitle.text.toString()
-            if(todoTitle.isNotEmpty()) {
-                val todo = Todo(todoTitle)
-                todoAdapter.addTodo(todo)
-                etTodoTitle.text.clear()
+        listViewItem = findViewById(R.id.lvTodoItems) as ListView
+
+        database = FirebaseDatabase.getInstance().reference
+
+        fab.setOnClickListener { view ->
+            val alertDialog = AlertDialog.Builder(this)
+            val textEditText = EditText(this)
+            alertDialog.setMessage("Add TODO item")
+            alertDialog.setTitle("Enter To Do item")
+            alertDialog.setView(textEditText)
+
+
+            alertDialog.setPositiveButton("Add") { dialog, i ->
+                val todoItemData = Todo.createList()
+                todoItemData.title = textEditText.text.toString()
+                todoItemData.isChecked = false
+
+                val newItemData = database.child("todo").push()
+                todoItemData.UID = newItemData.key
+                newItemData.setValue(todoItemData)
+
+                dialog.dismiss()
+                Toast.makeText(this, "item saved", Toast.LENGTH_LONG).show()
+
+
             }
+
+
+            alertDialog.show()
+
+
         }
-        btnDeleteDoneTodos.setOnClickListener { todoAdapter.deleteDoneTodos() }
+        toDoList = mutableListOf<Todo>()
+        adapter = TodoAdapter(this, toDoList!!)
+        listViewItem!!.adapter=adapter
 
-//        ibDelete.setOnClickListener { todoAdapter.deleteDoneTodos() }
-
-//        ibDelete.setOnClickListener {
-//            todoAdapter.deleteTodo()
-//        }
-
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                toDoList!!.clear()
+                addItemToList(snapshot)
 
 
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+                Toast.makeText(applicationContext, "No item Added", Toast.LENGTH_LONG).show()
+
+            }
+        })
     }
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        private fun addItemToList(snapshot: DataSnapshot) {
+            val items=snapshot.children.iterator()
+
+            if(items.hasNext()){
+
+                val toDoIndexedValue=items.next()
+                val itemsIterator=toDoIndexedValue.children.iterator()
+
+                while(itemsIterator.hasNext()) {
+
+                    val currentItem = itemsIterator.next()
+                    val toDoItemData = Todo.createList()
+                    val map = currentItem.getValue() as HashMap<*, *>
+
+
+                    toDoItemData.UID=currentItem.key
+                    toDoItemData.isChecked = map.get("isChecked")as Boolean? == true
+                    toDoItemData.title= map.get("title") as String?
+                    toDoList!!.add(toDoItemData)
+
+                }
+            }
+            adapter.notifyDataSetChanged()
+
+        }
+
+    override fun modifyItem(itemUID: String, isDone:Boolean ) {
+    val itemReference=database.child("todo").child(itemUID)
+        itemReference.child("isChecked").setValue(isDone)
+    }
+
+    override fun onItemDelete(itemUID: String) {
+        val itemReference=database.child("todo").child(itemUID)
+        itemReference.removeValue()
+        adapter.notifyDataSetChanged()
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean{
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 }
+
