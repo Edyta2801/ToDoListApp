@@ -1,11 +1,9 @@
 package com.example.todolist
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.View
-//import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
@@ -42,31 +40,46 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
         fab.setOnClickListener { view ->
             val alertDialog = AlertDialog.Builder(this)
             val textEditText = EditText(this)
-            alertDialog.setMessage("Add TODO item")
-            alertDialog.setTitle("Enter To Do item")
+//            alertDialog.setMessage("Add TODO item")
+            alertDialog.setTitle("Add Todo item")
             alertDialog.setView(textEditText)
 
 
             alertDialog.setPositiveButton("Add") { dialog, i ->
-                val todoItemData = Todo.createList()
-                todoItemData.title = textEditText.text.toString()
-                todoItemData.isChecked = false
+                if (textEditText.text.isNotEmpty()) {
+                    val todoItemData = Todo.createList()
+                    todoItemData.title = textEditText.text.toString()
+                    todoItemData.isChecked = false
 
-                val newItemData = database.child("todo").push()
-                todoItemData.UID = newItemData.key
-                newItemData.setValue(todoItemData)
+                    val newItemData = database.child("todo").push()
+                    todoItemData.UID = newItemData.key
+                    newItemData.setValue(todoItemData)
 
+                    dialog.dismiss()
+                    Toast.makeText(this, "Item saved", Toast.LENGTH_LONG).show()
+
+                }
+            }
+            alertDialog.setNegativeButton("Cancel") { dialog, i ->
                 dialog.dismiss()
-                Toast.makeText(this, "item saved", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "No item added", Toast.LENGTH_LONG).show()
 
 
             }
-
-
             alertDialog.show()
 
 
         }
+
+
+
+
+
+
+
+
+
+
         toDoList = mutableListOf<Todo>()
         adapter = TodoAdapter(this, toDoList!!)
         listViewItem!!.adapter=adapter
@@ -117,11 +130,15 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
         itemReference.child("isChecked").setValue(isDone)
     }
 
+
+
     override fun onItemDelete(itemUID: String) {
         val itemReference=database.child("todo").child(itemUID)
         itemReference.removeValue()
         adapter.notifyDataSetChanged()
     }
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean{
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
