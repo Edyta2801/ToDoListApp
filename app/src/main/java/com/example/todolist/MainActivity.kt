@@ -9,6 +9,7 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.*
+import android.widget.ImageButton as ImageButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton as FloatingActionButton
 import kotlin.Boolean as Boolean
 
@@ -71,15 +72,6 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
 
         }
 
-
-
-
-
-
-
-
-
-
         toDoList = mutableListOf<Todo>()
         adapter = TodoAdapter(this, toDoList!!)
         listViewItem!!.adapter=adapter
@@ -88,8 +80,6 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
             override fun onDataChange(snapshot: DataSnapshot) {
                 toDoList!!.clear()
                 addItemToList(snapshot)
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -125,18 +115,38 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
 
         }
 
+
+
     override fun modifyItem(itemUID: String, isDone:Boolean ) {
     val itemReference=database.child("todo").child(itemUID)
         itemReference.child("isChecked").setValue(isDone)
     }
 
 
-
     override fun onItemDelete(itemUID: String) {
-        val itemReference=database.child("todo").child(itemUID)
-        itemReference.removeValue()
-        adapter.notifyDataSetChanged()
-    }
+          val alertDialog = AlertDialog.Builder(this)
+            alertDialog.setMessage("Are you sure you want to Delete?")
+
+            alertDialog.setPositiveButton("Yes") { dialog, i ->
+
+                val itemReference = database.child("todo").child(itemUID)
+                itemReference.removeValue()
+                adapter.notifyDataSetChanged()
+
+                dialog.dismiss()
+                Toast.makeText(this, "Item deleted", Toast.LENGTH_LONG).show()
+
+
+            }
+            alertDialog.setNegativeButton("No") { dialog, i ->
+                dialog.dismiss()
+
+
+            }
+            alertDialog.show()
+
+
+        }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean{
