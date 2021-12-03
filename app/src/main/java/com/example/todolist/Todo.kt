@@ -9,4 +9,5 @@ class Todo {
     var UID:String?=null
     var title:String?=null
     var isChecked:Boolean=false
+
 }

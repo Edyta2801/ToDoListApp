@@ -1,15 +1,14 @@
 package com.example.todolist
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.View
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.*
-import android.widget.ImageButton as ImageButton
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton as FloatingActionButton
 import kotlin.Boolean as Boolean
 
@@ -117,10 +116,36 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
 
 
 
+//    override fun modifyItem(itemUID: String, isDone:Boolean ) {
+//    val itemReference=database.child("todo").child(itemUID)
+//        itemReference.child("isChecked").setValue(isDone)
+//    }
+
     override fun modifyItem(itemUID: String, isDone:Boolean ) {
-    val itemReference=database.child("todo").child(itemUID)
-        itemReference.child("isChecked").setValue(isDone)
+        val itemReference=database.child("todo").child(itemUID)
+
+
+        val title2=  itemReference.child("isChecked").setValue(isDone)
+
+
+        val title = findViewById<View>(R.id.tvToDoTitle) as TextView
+        val check=findViewById<View>(R.id.cbDone) as CheckBox
+
+       fun toggleStrikeThrough(title2: TextView, isDone: Boolean) {
+       if(isDone) {
+            title2.paintFlags = title2.paintFlags or STRIKE_THRU_TEXT_FLAG
+       } else {
+            title2.paintFlags = title2.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
+        }
     }
+
+        toggleStrikeThrough(title2 , isDone)
+
+
+
+    }
+
+
 
 
     override fun onItemDelete(itemUID: String) {
@@ -154,5 +179,12 @@ class MainActivity : AppCompatActivity(), UpdateAndDelete {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
+
 }
+
+
+
+
+
+
 

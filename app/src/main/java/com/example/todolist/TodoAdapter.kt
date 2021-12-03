@@ -9,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.ImageButton
 
+
 class TodoAdapter(context: Context, toDoList:MutableList<Todo>):BaseAdapter(){
 
     private val inflater:LayoutInflater= LayoutInflater.from(context)
@@ -24,6 +25,7 @@ class TodoAdapter(context: Context, toDoList:MutableList<Todo>):BaseAdapter(){
         val view:View
         val viewHolder:ListViewHolder
 
+
     if (p1==null){
     view=inflater.inflate(R.layout.item_todo,p2, false )
     viewHolder=ListViewHolder(view)
@@ -35,23 +37,23 @@ class TodoAdapter(context: Context, toDoList:MutableList<Todo>):BaseAdapter(){
     }
     viewHolder.textLabel.text=title
     viewHolder.isDone.isChecked=isChecked
-
     viewHolder.isDone.setOnClickListener{
-    updateAndDelete.modifyItem(UID, !isChecked)
+        updateAndDelete.modifyItem(UID, !isChecked)
     }
         viewHolder.isDeleted.setOnClickListener{
-        updateAndDelete.onItemDelete(UID)}
+            updateAndDelete.onItemDelete(UID)}
+
+
 
     return view
     }
 
    private class ListViewHolder(row:View?){
-        val textLabel:TextView= row!!.findViewById(R.id.tvToDoTitle) as TextView
-        val isDone:CheckBox= row!!.findViewById(R.id.cbDone) as CheckBox
-        val isDeleted:ImageButton= row!!.findViewById(R.id.ibDelete) as ImageButton
+       val textLabel:TextView= row!!.findViewById(R.id.tvToDoTitle) as TextView
+       val isDone:CheckBox= row!!.findViewById(R.id.cbDone) as CheckBox
+       val isDeleted:ImageButton= row!!.findViewById(R.id.ibDelete) as ImageButton
+   }
 
-
-    }
 
     override fun getItem(p0:Int): Any {
        return itemList[p0]
@@ -65,4 +67,6 @@ class TodoAdapter(context: Context, toDoList:MutableList<Todo>):BaseAdapter(){
         return itemList.size
     }
 }
+
+
 
